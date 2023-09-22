@@ -1,0 +1,42 @@
+<div>
+
+  <div class="canvas-container">
+
+    <div class="canvas-control">
+
+      <div>
+        <input type="checkbox" [(ngModel)]="showStatitics" /> Show Statitics
+      </div>
+      <div>
+        <label>Population Size</label>
+        <input type="number" max="300" min="2" step="1" value="50" [(ngModel)]="populationSize" />
+      </div>
+
+      <div>
+        <button  [hidden]="!canTest" (click)="saveModel()">Test It</button>
+      </div>
+    </div>
+    <canvas #canvas></canvas>
+  </div>
+  <div [hidden]="!showStatitics" class="table-container">
+    <div class="table-header">
+      <div>X</div>
+
+      <div>Y</div>
+      <div>Is Alive </div>
+      <div>Color </div>
+      <div>Score </div>
+
+    </div>
+    <div class="table-body">
+      <div *ngFor="let arrow of gridCubes" class="table-row">
+        <div class="table-body-values">{{arrow.x.toString()| slice:0:4 }}</div>
+        <div class="table-body-values">{{arrow.y.toString()| slice:0:4 }}</div>
+        <div class="table-body-values">{{arrow.isAlive}}</div>
+        <div [style.background-color]="arrow.color" class="table-body-values"></div>
+        <div class="table-body-values">{{arrow.scoreForTurn.toString() | slice:0:4 }}</div>
+
+      </div>
+    </div>
+  </div>
+</div>

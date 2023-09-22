@@ -1,0 +1,7 @@
+{
+  "name": "genetic-algorithm-and-neural-network",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
