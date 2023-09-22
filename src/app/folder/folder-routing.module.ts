@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, ActivatedRoute } from '@angular/router';
 
 import { MainComponent } from './main.component';
 import { TrainningComponent } from '../trainning/trainning.component';
@@ -18,24 +18,17 @@ const routes: Routes = [
         path: 'test-model',
         component: TestModelComponent
       },
-      {
-        path: '**',
-        redirectTo: 'trainning',
-        pathMatch: 'full'
-      },
+
     ]
   },
-  {
-    path: '**',
-    redirectTo: '',
-    pathMatch: 'full'
-  },
-
 
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [
+    RouterModule.forChild(routes),
+
+  ],
   exports: [RouterModule],
 })
 export class MainComponentRoutingModule { }

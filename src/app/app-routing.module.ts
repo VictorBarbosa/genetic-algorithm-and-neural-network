@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { MainComponent } from './folder/main.component';
+import { TrainningComponent } from './trainning/trainning.component';
+import { TestModelComponent } from './test-model/test-model.component';
 
 const routes: Routes = [
   {
-    path: '',
-    loadChildren: () => import('./folder/folder.module').then( m => m.MainComponentModule)
-  },
-  {
-    path: '**',
-    redirectTo: '',
-    pathMatch: 'full'
-  },
+    path: '', component: MainComponent,
+    children: [
+      { path: 'trainning', component: TrainningComponent },
+      { path: 'test-model', component: TestModelComponent },
+      { path: '**', redirectTo: 'trainning' }
+    ]
+  }
+
 ];
 
 @NgModule({
@@ -19,4 +22,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
