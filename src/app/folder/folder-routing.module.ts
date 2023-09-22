@@ -21,7 +21,10 @@ const routes: Routes = [
 
     ]
   },
-
+  {
+    path: 'trainning',
+    component: TrainningComponent
+  },
 ];
 
 @NgModule({

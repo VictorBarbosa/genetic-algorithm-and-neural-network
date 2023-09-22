@@ -14,8 +14,10 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
   declarations: [AppComponent],
   imports: [BrowserModule,
 
-    FormsModule, MainComponentModule,
-    IonicModule.forRoot(), AppRoutingModule,],
+    FormsModule,
+    MainComponentModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     , { provide: LocationStrategy, useClass: HashLocationStrategy }
