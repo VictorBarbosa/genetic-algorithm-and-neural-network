@@ -10,7 +10,8 @@ export class Obstacle {
   constructor(private p: any) {
     this.x = p.random(-p.width, p.width - 20);
     this.y = -20;
-    this.speed = p.random(2, 3.5);
+    // this.speed = p.random(2, 3.5);
+    this.speed = 2;
     // this.width = p.random(20, 50);
     // this.height = p.random(20, 50);
     this.width = 40;

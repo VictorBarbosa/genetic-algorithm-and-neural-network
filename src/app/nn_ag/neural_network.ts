@@ -9,7 +9,7 @@ export default class NeuralNetwork {
     tf.setBackend('cpu');
     const model = tf.sequential();
     model.add(tf.layers.dense({ units: this.hidden_nodes*4, activation: 'relu', inputShape: [inputSize], }));
-    model.add(tf.layers.dense({ units: this.hidden_nodes * 4, activation: 'relu', }));
+
     model.add(tf.layers.dense({ units: outputSize, activation: 'softmax' }));
     this.model = model;
   }
