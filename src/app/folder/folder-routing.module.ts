@@ -19,12 +19,14 @@ const routes: Routes = [
         component: TestModelComponent
       },
 
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'trainning'
+      },
     ]
   },
-  {
-    path: 'trainning',
-    component: TrainningComponent
-  },
+
 ];
 
 @NgModule({
