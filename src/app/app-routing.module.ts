@@ -7,7 +7,7 @@ const routes: Routes = [
     loadChildren: () => import('./folder/folder.module').then( m => m.MainComponentModule)
   },
   {
-    path: '',
+    path: '**',
     redirectTo: '',
     pathMatch: 'full'
   },

@@ -19,7 +19,7 @@ const routes: Routes = [
         component: TestModelComponent
       },
       {
-        path: '',
+        path: '**',
         redirectTo: 'trainning',
         pathMatch: 'full'
       },
