@@ -11,6 +11,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "git-publish": "ng build -c --output-path docs --base-href /genetic-algorithm-and-neural-network/ && git add . && git commit -m publish && git push"
+,    "iphone":"ionic  capacitor run ios --external --livereload   --watch     --open"
+
   },
   "private": true,
   "dependencies": {
