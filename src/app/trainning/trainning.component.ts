@@ -144,13 +144,13 @@ export class TrainningComponent {
     this.p5 = new p5(this.sketch.bind(this));
   }
 
-  private sketch(p: any) {
+  private sketch(p: p5) {
 
     let score = 0;
 
     p.setup = () => {
       if (window.innerWidth < 767) {
-        p.createCanvas(window.innerWidth, window.innerHeight, this.canvas?.nativeElement);
+        p.createCanvas(window.innerWidth, window.innerHeight / 2, this.canvas?.nativeElement);
 
       } else {
         p.createCanvas(window.innerWidth - 290, window.innerHeight - 70, this.canvas?.nativeElement);
