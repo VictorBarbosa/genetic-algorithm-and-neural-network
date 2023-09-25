@@ -2,9 +2,9 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import * as p5 from 'p5';
 import GeneticAlgorithm from '../nn_ag/genetic-algorithm';
 
-import { Obstacle } from '../nn_ag/Obstacle';
+import Obstacle from '../nn_ag/Obstacle';
 import Individual from '../nn_ag/Individual';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, shareReplay, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 
@@ -39,6 +39,10 @@ export class TrainningComponent {
    */
   showStatitics: boolean = false;
 
+  /**
+   *
+   */
+  obstacleSize: number = 90;
 
   /*
    * PopulationSize
@@ -147,14 +151,18 @@ export class TrainningComponent {
     p.setup = () => {
       p.createCanvas(window.innerWidth - 290, window.innerHeight - 70, this.canvas?.nativeElement);
 
-
+      p.frameRate(120)
       for (let i = 0; i < this.populationSize; i++) {
         this.population.push(new Individual(p));
       }
 
       // Adicione alguns obstáculos iniciais
-      for (let i = 0; i < 30; i++) {
-        this.obstacles.push(new Obstacle(p));
+      let current = 0
+      for (let i = 0; i < this.obstacleSize; i++) {
+        const obstacle = new Obstacle(p);
+        obstacle.y = current
+        this.obstacles.push(obstacle);
+        current -= 100
       }
     };
 
@@ -166,7 +174,7 @@ export class TrainningComponent {
       //Create new Population
       if (pop.length === 0) {
 
-        pop = this.geneticAlgorithm.generateNextGeneration(0.4, this.population)
+        pop = this.geneticAlgorithm.generateNextGeneration(0.3, this.population)
 
         pop.forEach(x => {
           x.scoreForTurn = 0,
@@ -175,17 +183,29 @@ export class TrainningComponent {
         this.population = pop;
       }
 
-      if (p.frameCount % 10 === 0) {
+
+      this.obstacles = this.obstacles.sort((a, b) => {
+        if (a.y < b.y) { return 1; }
+        if (a.y > b.y) { return -1; }
+        return 0;
+      })
+
+      const last = this.obstacles[this.obstacles.length - 1];
+      // if (p.frameCount % 10 === 0 && last.y > 0) {
+      if (last.y > 0 && this.obstacles.length < this.obstacleSize) {
         this.obstacles.push(new Obstacle(p));
       }
 
       if (pop.length > 0) {
 
+
         for (let i = this.obstacles.length - 1; i >= 0; i--) {
           this.obstacles[i].show();
           this.obstacles[i].update();
-          this.obstacles[i].hits(pop);
-
+          const hit = this.obstacles[i].hits(pop);
+          if (hit.length > 0) {
+            this.obstacles[i].destroy();
+          }
 
           if (this.obstacles[i] && this.obstacles[i].offscreen()) { // Verifique se o obstáculo ainda existe
             this.obstacles.splice(i, 1);
@@ -203,6 +223,12 @@ export class TrainningComponent {
 
         const nearBy = player.sortByProximity(this.obstacles);
         if (nearBy) {
+
+          // const input = this.createInput(nearBy, player, this.obstacleSize)
+          // player.neuralNetwork.predict(input)
+          // const actions = player.neuralNetwork.predictClass(input, ["Left", "Center", "Right"])
+
+
 
 
           const values = [player.x, player.y, nearBy[0].x, nearBy[0].y, nearBy[0].distance];
@@ -225,15 +251,28 @@ export class TrainningComponent {
       p.text(`Total alive: ${this.totaAlive}`, 40, 50);
     };
 
-
-
-
   }
 
   async saveModel() {
     this.gridCubes[0].neuralNetwork.model.save('localstorage://my-model-1');
 
     this.router.navigate(['test-model']);
+
+  }
+
+
+  createInput(obstacles: Obstacle[], player: Individual, inputSize: number) {
+
+    let input: any[] = [];
+    obstacles.forEach(obstacle => input.push([player.x, player.y, obstacle.x, obstacle.y, obstacle.distance]))
+
+    for (let i = input.length; i < (inputSize + 1); i++) {
+      input.push([player.x, player.y, -1, -1, -1])
+    }
+
+    const flat = (input.slice(0, 5) as any).flat()
+
+    return flat
 
   }
 }

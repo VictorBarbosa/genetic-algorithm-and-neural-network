@@ -1,17 +1,22 @@
+import * as p5 from 'p5';
 import Individual from './Individual';
 
-export class Obstacle {
+export default class Obstacle {
+
   x: any;
-  y: number;
+  y: any;
   speed: any;
   width: any;
   height: any;
   distance: number = 0;
-  constructor(private p: any) {
-    this.x = p.random(-p.width, p.width - 20);
-    this.y = -20;
+  constructor(private p: p5) {
+    this.x = p.random(-p.width, p.width);
+
+    // this.x = p.random(300, p.width /2 );
+
+    this.y = -100;
     // this.speed = p.random(2, 3.5);
-    this.speed = 2;
+    this.speed = 4;
     // this.width = p.random(20, 50);
     // this.height = p.random(20, 50);
     this.width = 40;
@@ -22,9 +27,17 @@ export class Obstacle {
    * Show the obstacles
    */
   show() {
-    this.p.fill(0, 0, 255);
-    this.p.rect(this.x, this.y, this.width, this.height);
+    if (this.y > 0) {
+
+      this.p.fill(0, 0, 255);
+      this.p.rect(this.x, this.y, this.width, this.height);
+      this.p.fill(255, 255, 255)
+      this.p.text(this.y, this.x, this.y + 36,)
+    }
   }
+
+
+
 
   /**
    * Updade the scene
@@ -52,10 +65,15 @@ export class Obstacle {
     for (let i = 0; i < players.length; i++) {
       const player = players[i];
 
-      if (player.x + player.size > this.x &&
-        player.x - player.size < this.x &&
-        player.y + player.size > this.y - 10 &&
-        player.y - player.size < this.y - 10) {
+      const playerXPlus = player.x + player.size;
+      const playerXLess = player.x - player.size;
+      const playerYPlus = player.y + player.size;
+      const playerYLess = player.y - player.size;
+
+      if (playerXPlus + 2 > this.x
+        && playerXLess + 8 < this.x
+        && playerYPlus > this.y - 12
+        && playerYLess < this.y - 12) {
 
         players[i].isAlive = false;
         collisions.push({ collided: true, index: i });
@@ -66,6 +84,8 @@ export class Obstacle {
     return collisions;
   }
 
-
+  destroy() {
+    this.y += this.y;
+  }
 
 }

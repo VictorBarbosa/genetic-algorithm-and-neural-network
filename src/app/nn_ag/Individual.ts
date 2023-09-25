@@ -2,7 +2,7 @@
 import * as tf from '@tensorflow/tfjs';
 import NeuralNetwork from './neural_network';
 import * as  p5 from 'p5';
-import { Obstacle } from './Obstacle';
+import  Obstacle   from './Obstacle';
 export default class Individual {
   generation: number = 0;
   fitness: number = 0
@@ -41,38 +41,38 @@ export default class Individual {
    * @param mutationRate
    */
   mutate(mutationRate: number) {
-    this.neuralNetwork.mutate(mutationRate)
-    // const model = this.neuralNetwork.model; // Clone o modelo para evitar mutações diretas
+    // this.neuralNetwork.mutate(mutationRate)
+    const model = this.neuralNetwork.model; // Clone o modelo para evitar mutações diretas
 
-    // // Percorra todas as camadas do modelo
-    // model.layers.forEach((layer: any) => {
-    //   // Obtenha os pesos da camada
-    //   const weights = layer.getWeights();
+    // Percorra todas as camadas do modelo
+    model.layers.forEach((layer: any) => {
+      // Obtenha os pesos da camada
+      const weights = layer.getWeights();
 
-    //   // Percorra cada matriz de pesos e adicione uma mutação
-    //   const mutatedWeights = weights.map((weight: any) => {
-    //     const shape = weight.shape;
-    //     const values = weight.arraySync() as number[][]; // Certifique-se de que o dtype seja compatível
+      // Percorra cada matriz de pesos e adicione uma mutação
+      const mutatedWeights = weights.map((weight: any) => {
+        const shape = weight.shape;
+        const values = weight.arraySync() as number[][]; // Certifique-se de que o dtype seja compatível
 
-    //     for (let i = 0; i < shape[0]; i++) {
-    //       for (let j = 0; j < shape[1]; j++) {
-    //         if (Math.random() < mutationRate) {
-    //           // Adicione uma pequena mutação ao peso
-    //           const mutation = (Math.random() * 2 - 1) * 0.1; // Pequena mutação aleatória
-    //           values[i][j] += mutation;
-    //         }
-    //       }
-    //     }
+        for (let i = 0; i < shape[0]; i++) {
+          for (let j = 0; j < shape[1]; j++) {
+            if (Math.random() < mutationRate) {
+              // Adicione uma pequena mutação ao peso
+              const mutation = (Math.random() * 2 - 1) * 0.1; // Pequena mutação aleatória
+              values[i][j] += mutation;
+            }
+          }
+        }
 
-    //     return tf.tensor(values, shape, 'float32');
-    //   });
+        return tf.tensor(values, shape, 'float32');
+      });
 
-    //   // Defina os novos pesos mutados para a camada
-    //   layer.setWeights(mutatedWeights);
-    // });
+      // Defina os novos pesos mutados para a camada
+      layer.setWeights(mutatedWeights);
+    });
 
-    // // Defina o novo modelo mutado no indivíduo
-    // this.neuralNetwork.model = model;
+    // Defina o novo modelo mutado no indivíduo
+    this.neuralNetwork.model = model;
   }
 
   // mutate2(rate: number) {

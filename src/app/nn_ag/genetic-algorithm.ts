@@ -54,31 +54,28 @@ export default class GeneticAlgorithm {
 
     const newGeneration: Individual[] = [];
 
-    try {
-
-      while (newGeneration.length < this.population.length) {
-        const parent1 = selectedIndividuals[Math.floor(Math.random() * selectedIndividuals.length)];
-        const parent2 = selectedIndividuals[Math.floor(Math.random() * selectedIndividuals.length)];
-        // const parent1 = this.population[0];
-        // const parent2 = this.population[1];
-        const [child1, child2] = parent1.crossover(parent1, parent2);
+    while (newGeneration.length < this.population.length) {
+      const parent1 = selectedIndividuals[Math.floor(Math.random() * selectedIndividuals.length)];
+      const parent2 = selectedIndividuals[Math.floor(Math.random() * selectedIndividuals.length)];
+      // const parent1 = this.population[0];
+      // const parent2 = this.population[1];
+      const [child1, child2] = parent1.crossover(parent1, parent2);
 
 
-        child1.mutate(mutateRate);
+      child1.mutate(mutateRate);
 
-        child2.mutate(mutateRate);
+      child2.mutate(mutateRate);
 
-        newGeneration.push(child1, child2);
+      newGeneration.push(child1, child2);
 
-      }
-
-    } catch (error) {
-      console.trace(error)
-      debugger
     }
 
+
     const last = newGeneration.length - 1;
+    bestParent.isAlive = true;
+    bestParent.scoreForTurn = 0;
     newGeneration[last] = bestParent
+    // newGeneration[last - 1] = bestParent
 
     this.population = newGeneration;
 

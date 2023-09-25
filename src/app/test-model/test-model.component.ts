@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import * as tf from '@tensorflow/tfjs'
 import * as p5 from 'p5';
 
-import { Obstacle } from '../nn_ag/Obstacle';
+import Obstacle from '../nn_ag/Obstacle';
 import Individual from '../nn_ag/Individual';
 
 @Component({
@@ -28,6 +28,10 @@ export class TestModelComponent {
   population: Individual[] = [];
 
 
+  /**
+   *
+   */
+  obstacles: Obstacle[] = []
 
   /**
   *
@@ -60,6 +64,9 @@ export class TestModelComponent {
     });
   }
 
+
+  obstacleSize: number = 30;
+
   /**
    * Constructor
    */
@@ -85,7 +92,6 @@ export class TestModelComponent {
    * @param p
    */
   private sketch(p: any) {
-    let obstacles: Obstacle[] = [];
     let score = 0;
     let populationSize = 1;
 
@@ -97,8 +103,13 @@ export class TestModelComponent {
         this.population.push(new Individual(p));
       }
 
-      for (let i = 0; i < 20; i++) {
-        obstacles.push(new Obstacle(p));
+      // Adicione alguns obstáculos iniciais
+      let current = 0
+      for (let i = 0; i < this.obstacleSize; i++) {
+        const obstacle = new Obstacle(p);
+        obstacle.y = current
+        this.obstacles.push(obstacle);
+        current += 400
       }
     };
 
@@ -107,17 +118,17 @@ export class TestModelComponent {
 
       let pop = this.population.filter(f => f.isAlive)
 
-      if (p.frameCount % 30 === 0) {
-        obstacles.push(new Obstacle(p));
+      if (p.frameCount % 15 === 0) {
+        this.obstacles.push(new Obstacle(p));
       }
 
       if (pop.length > 0) {
 
-        for (let i = obstacles.length - 1; i >= 0; i--) {
-          obstacles[i].show();
-          obstacles[i].update();
+        for (let i = this.obstacles.length - 1; i >= 0; i--) {
+          this.obstacles[i].show();
+          this.obstacles[i].update();
 
-          const collisionResults = obstacles[i].hits(pop);
+          const collisionResults = this.obstacles[i].hits(pop);
 
           for (const collisionResult of collisionResults) {
 
@@ -126,8 +137,8 @@ export class TestModelComponent {
             }
           }
 
-          if (obstacles[i] && obstacles[i].offscreen()) { // Verifique se o obstáculo ainda existe
-            obstacles.splice(i, 1);
+          if (this.obstacles[i] && this.obstacles[i].offscreen()) { // Verifique se o obstáculo ainda existe
+            this.obstacles.splice(i, 1);
             score++;
           }
         }
@@ -140,7 +151,7 @@ export class TestModelComponent {
         player.show();
 
 
-        const nearBy = player.sortByProximity(obstacles);
+        const nearBy = player.sortByProximity(this.obstacles);
         if (nearBy) {
 
           console.log(nearBy[0].x)
