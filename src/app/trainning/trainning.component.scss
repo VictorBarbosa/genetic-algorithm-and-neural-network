@@ -179,11 +179,10 @@ body {
   }
 }
 
-input{
-
+input {
   margin-bottom: 10px;
 }
-input[type=number] {
+input[type="number"] {
   border: transparent;
   border-bottom: 1px solid;
   width: 9em;
@@ -197,4 +196,16 @@ button {
   padding: 10px 25px;
   border-radius: 10px;
   margin-bottom: 10px;
+}
+/* Estilos para dispositivos móveis (largura máxima de 767 pixels) */
+@media screen and (max-width: 767px) {
+  .canvas-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    canvas{
+      width: 100%!important;
+      height:  100%!important;
+    }
+  }
 }

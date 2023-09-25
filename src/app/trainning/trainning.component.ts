@@ -149,7 +149,13 @@ export class TrainningComponent {
     let score = 0;
 
     p.setup = () => {
-      p.createCanvas(window.innerWidth - 290, window.innerHeight - 70, this.canvas?.nativeElement);
+      if (window.innerWidth < 767) {
+        p.createCanvas(window.innerWidth, window.innerHeight, this.canvas?.nativeElement);
+
+      } else {
+        p.createCanvas(window.innerWidth - 290, window.innerHeight - 70, this.canvas?.nativeElement);
+
+      }
 
       p.frameRate(120)
       for (let i = 0; i < this.populationSize; i++) {
