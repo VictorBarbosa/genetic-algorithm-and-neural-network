@@ -3,7 +3,7 @@ import { Routes, RouterModule, ActivatedRoute } from '@angular/router';
 
 import { MainComponent } from './main.component';
 import { TrainningComponent } from '../trainning/trainning.component';
-import { TestModelComponent } from '../test-model/test-model.component';
+
 
 const routes: Routes = [
   {
@@ -14,10 +14,7 @@ const routes: Routes = [
         path: 'trainning',
         component: TrainningComponent
       },
-      {
-        path: 'test-model',
-        component: TestModelComponent
-      },
+
 
       {
         path: '',

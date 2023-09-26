@@ -2,29 +2,74 @@
 import * as tf from '@tensorflow/tfjs';
 import NeuralNetwork from './neural_network';
 import * as  p5 from 'p5';
-import  Obstacle   from './Obstacle';
+import Obstacle from './Obstacle';
 export default class Individual {
+  /**
+   *
+   */
   generation: number = 0;
+
+  /**
+   *
+   */
   fitness: number = 0
+
+  /**
+   *
+   */
   inputSize: number = 5
+
+  /**
+   *
+   */
   outputSize: number = 3
+
+  /**
+   *
+   */
   isAlive: boolean = true
+
+  /**
+   *
+   */
   neuralNetwork!: NeuralNetwork;
+
+  /**
+   *
+   */
   x: number = 0;
 
+  /**
+   *
+   */
   y: number = 0;
 
+  /**
+   *
+   */
   size: number = 0;
 
+
+  /**
+   *
+   */
   isHit = false; // Inicialmente, o jogador não foi atingido
 
-
-
+  /**
+   *
+   */
   color: string = 'black';
 
+
+  /**
+   *
+   */
   scoreForTurn = 0;
 
-
+  /**
+   *
+   * @param p
+   */
   constructor(private p: p5) {
     tf.setBackend('cpu');
 
@@ -75,30 +120,6 @@ export default class Individual {
     this.neuralNetwork.model = model;
   }
 
-  // mutate2(rate: number) {
-  //   tf.tidy(() => {
-  //     const weights = this.neuralNetwork.model.getWeights();
-  //     const mutatedWeights = [];
-  //     for (let i = 0; i < weights.length; i++) {
-  //       let tensor = weights[i];
-  //       let shape = weights[i].shape;
-  //       let values = tensor.dataSync().slice();
-  //       for (let j = 0; j < values.length; j++) {
-  //         if (Math.random() < rate) {
-  //           let w = values[j];
-
-  //           const p = new p5(() => { });
-  //           values[j] = w + p.randomGaussian();
-  //         }
-  //       }
-  //       let newTensor = tf.tensor(values, shape);
-  //       mutatedWeights[i] = newTensor;
-  //     }
-  //     this.neuralNetwork.model.setWeights(mutatedWeights);
-  //   });
-  // }
-
-
   /**
    * crossover
    * @param parent1
@@ -122,19 +143,19 @@ export default class Individual {
 
 
         if (layer1 && layer2) {
-          // Obter os pesos dos pais
+
           const weights1 = layer1.getWeights();
           const weights2 = layer2.getWeights();
 
           const childWeights1: tf.Tensor[] = [];
           const childWeights2: tf.Tensor[] = [];
 
-          // Iterar pelos pesos de cada camada e fazer o crossover
+
           for (let i = 0; i < weights1.length; i++) {
             const weight1 = weights1[i];
             const weight2 = weights2[i];
 
-            // Escolher aleatoriamente um dos pais para cada peso
+
             const crossoverMask = tf.randomUniform(weight1.shape);
 
             const childWeight1 = tf.cast(tf.add(tf.mul(crossoverMask, weight1), tf.mul(tf.sub(1, crossoverMask), weight2)), 'float32');
@@ -143,22 +164,19 @@ export default class Individual {
             childWeights2.push(childWeight2);
           }
 
-          // Definir os pesos dos filhos para as camadas correspondentes
           childModel1.add(tf.layers.dense({
             units: (layer1 as any).units,
             inputShape: layer1.batchInputShape ? layer1.batchInputShape.slice(1) : undefined,
             activation: 'relu',
-            // kernelInitializer: 'varianceScaling',
-            weights: childWeights1, // Passar os pesos do filho 1
+
+            weights: childWeights1,
           }));
 
           childModel2.add(tf.layers.dense({
             units: (layer2 as any).units,
             inputShape: layer2.batchInputShape ? layer2.batchInputShape.slice(1) : undefined,
             activation: 'relu',
-            // kernelInitializer: 'varianceScaling',
-            // kernelInitializer: 'varianceScaling',
-            weights: childWeights2, // Passar os pesos do filho 2
+            weights: childWeights2,
           }));
         }
 
@@ -177,18 +195,18 @@ export default class Individual {
     }
   }
 
-
-
+  /**
+   *
+   */
   show() {
-    // this.p.fill(255, 0, 0);
     this.p.fill(this.color);
-    // this.p.ellipse(this.x, this.y, this.radius * 2);
     this.p.rect(this.x, this.y, this.size, this.size);
-
   }
 
+  /**
+   *
+   */
   update() {
-
     if (this.p.keyIsDown(this.p.LEFT_ARROW)) {
       this.x -= 5;
 
@@ -200,16 +218,26 @@ export default class Individual {
 
   }
 
-
+  /**
+   *
+   */
   moveLeft() {
     this.x -= 5;
     this.x = this.p.constrain(this.x, 0, this.p.width - this.size);
   }
+
+  /**
+   *
+   */
   moveRigth() {
     this.x += 5;
     this.x = this.p.constrain(this.x, 0, this.p.width - this.size);
   }
 
+  /**
+   *
+   * @returns
+   */
   getRandomColor() {
     const red = Math.floor(Math.random() * 256); // Valor entre 0 e 255
     const green = Math.floor(Math.random() * 256); // Valor entre 0 e 255
@@ -219,22 +247,33 @@ export default class Individual {
     return color;
   }
 
+  /**
+   *
+   * @param coordsList
+   * @returns
+   */
   sortByProximity(coordsList: Obstacle[]): Obstacle[] {
     const targetX = this.x;
     const targetY = this.y;
 
-    // Adicione a distância euclidiana a cada obstáculo
     coordsList.forEach(obstacle => {
       obstacle.distance = this.calculateDistance(obstacle.x, obstacle.y, targetX, targetY);
     });
 
-    // Ordenar a lista com base na distância (quanto menor a distância, mais próximo do topo)
+
     coordsList.sort((obstacle1, obstacle2) => obstacle1.distance - obstacle2.distance);
 
     return coordsList;
   }
 
-  // Função para calcular a distância euclidiana entre duas coordenadas
+  /**
+   *
+   * @param x1
+   * @param y1
+   * @param x2
+   * @param y2
+   * @returns
+   */
   calculateDistance(x1: number, y1: number, x2: number, y2: number): number {
     return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
   }

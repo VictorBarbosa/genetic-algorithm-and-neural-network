@@ -11,14 +11,8 @@ export default class Obstacle {
   distance: number = 0;
   constructor(private p: p5) {
     this.x = p.random(-p.width, p.width);
-
-    // this.x = p.random(300, p.width /2 );
-
     this.y = -100;
-    // this.speed = p.random(2, 3.5);
     this.speed = 4;
-    // this.width = p.random(20, 50);
-    // this.height = p.random(20, 50);
     this.width = 40;
     this.height = 40;
   }
@@ -28,16 +22,12 @@ export default class Obstacle {
    */
   show() {
     if (this.y > 0) {
-
       this.p.fill(0, 0, 255);
       this.p.rect(this.x, this.y, this.width, this.height);
       this.p.fill(255, 255, 255)
       this.p.text(this.y, this.x, this.y + 36,)
     }
   }
-
-
-
 
   /**
    * Updade the scene
@@ -80,10 +70,12 @@ export default class Obstacle {
       }
     }
 
-
     return collisions;
   }
 
+  /**
+   *
+   */
   destroy() {
     this.y += this.y;
   }

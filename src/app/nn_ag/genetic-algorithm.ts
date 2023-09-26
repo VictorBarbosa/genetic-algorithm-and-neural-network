@@ -46,7 +46,6 @@ export default class GeneticAlgorithm {
   }
 
   generateNextGeneration(mutateRate: number, oldGeneration: Individual[]) {
-    // this.evaluate(targetX, targetY, currentX, currentY);
 
     this.population = oldGeneration
     const bestParent = this.sortParent();
@@ -57,13 +56,9 @@ export default class GeneticAlgorithm {
     while (newGeneration.length < this.population.length) {
       const parent1 = selectedIndividuals[Math.floor(Math.random() * selectedIndividuals.length)];
       const parent2 = selectedIndividuals[Math.floor(Math.random() * selectedIndividuals.length)];
-      // const parent1 = this.population[0];
-      // const parent2 = this.population[1];
       const [child1, child2] = parent1.crossover(parent1, parent2);
 
-
       child1.mutate(mutateRate);
-
       child2.mutate(mutateRate);
 
       newGeneration.push(child1, child2);
@@ -75,11 +70,8 @@ export default class GeneticAlgorithm {
     bestParent.isAlive = true;
     bestParent.scoreForTurn = 0;
     newGeneration[last] = bestParent
-    // newGeneration[last - 1] = bestParent
 
     this.population = newGeneration;
-
-
     return this.population
   }
 

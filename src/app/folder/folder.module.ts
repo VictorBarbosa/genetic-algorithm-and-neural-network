@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { MainComponentRoutingModule } from './folder-routing.module';
 
 import { MainComponent } from './main.component';
-import { TestModelComponent } from '../test-model/test-model.component';
+
 import { TrainningComponent } from '../trainning/trainning.component';
 
 @NgModule({
@@ -17,10 +17,9 @@ import { TrainningComponent } from '../trainning/trainning.component';
     IonicModule,
     MainComponentRoutingModule
   ],
-  declarations: [MainComponent,
-    TestModelComponent,
+  declarations: [
+    MainComponent,
     TrainningComponent
-
   ]
 })
 export class MainComponentModule { }

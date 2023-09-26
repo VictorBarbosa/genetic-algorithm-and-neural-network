@@ -123,10 +123,16 @@ export class TrainningComponent {
     return this.gridCubes[0].scoreForTurn
   }
 
+  /**
+   *
+   * @param router
+   */
   constructor(private router: Router) { }
 
+  /**
+   *
+   */
   ngOnInit() {
-
 
     this.populationSize$.pipe(tap((() => {
       if (this.p5) {
@@ -162,7 +168,7 @@ export class TrainningComponent {
         this.population.push(new Individual(p));
       }
 
-      // Adicione alguns obstáculos iniciais
+
       let current = 0
       for (let i = 0; i < this.obstacleSize; i++) {
         const obstacle = new Obstacle(p);
@@ -197,7 +203,6 @@ export class TrainningComponent {
       })
 
       const last = this.obstacles[this.obstacles.length - 1];
-      // if (p.frameCount % 10 === 0 && last.y > 0) {
       if (last.y > 0 && this.obstacles.length < this.obstacleSize) {
         this.obstacles.push(new Obstacle(p));
       }
@@ -230,16 +235,9 @@ export class TrainningComponent {
         const nearBy = player.sortByProximity(this.obstacles);
         if (nearBy) {
 
-          // const input = this.createInput(nearBy, player, this.obstacleSize)
-          // player.neuralNetwork.predict(input)
-          // const actions = player.neuralNetwork.predictClass(input, ["Left", "Center", "Right"])
-
-
-
-
-          const values = [player.x, player.y, nearBy[0].x, nearBy[0].y, nearBy[0].distance];
-          player.neuralNetwork.predict(values)
-          const actions = player.neuralNetwork.predictClass(values, ["Left", "Center", "Right"])
+          const input = this.createInput(nearBy, player, this.obstacleSize)
+          player.neuralNetwork.predict(input)
+          const actions = player.neuralNetwork.predictClass(input, ["Left", "Center", "Right"])
 
           switch (actions) {
             case "Left": player.moveLeft(); break;
@@ -259,6 +257,9 @@ export class TrainningComponent {
 
   }
 
+  /**
+   *
+   */
   async saveModel() {
     this.gridCubes[0].neuralNetwork.model.save('localstorage://my-model-1');
 
@@ -267,6 +268,13 @@ export class TrainningComponent {
   }
 
 
+  /**
+   *
+   * @param obstacles
+   * @param player
+   * @param inputSize
+   * @returns
+   */
   createInput(obstacles: Obstacle[], player: Individual, inputSize: number) {
 
     let input: any[] = [];
