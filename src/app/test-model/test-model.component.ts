@@ -97,11 +97,18 @@ export class TestModelComponent {
 
 
     p.setup = () => {
-      p.createCanvas(window.innerWidth - 290, window.innerHeight - 70, this.canvas?.nativeElement);
+      if (window.innerWidth < 767) {
+        p.createCanvas(window.innerWidth, window.innerHeight / 2, this.canvas?.nativeElement);
+
+      } else {
+        p.createCanvas(window.innerWidth - 290, window.innerHeight - 70, this.canvas?.nativeElement);
+
+      }
 
       for (let i = 0; i < populationSize; i++) {
         this.population.push(new Individual(p));
       }
+
 
       // Adicione alguns obstáculos iniciais
       let current = 0
@@ -109,7 +116,7 @@ export class TestModelComponent {
         const obstacle = new Obstacle(p);
         obstacle.y = current
         this.obstacles.push(obstacle);
-        current += 400
+        current -= 100
       }
     };
 
@@ -118,25 +125,30 @@ export class TestModelComponent {
 
       let pop = this.population.filter(f => f.isAlive)
 
-      if (p.frameCount % 15 === 0) {
+      this.obstacles = this.obstacles.sort((a, b) => {
+        if (a.y < b.y) { return 1; }
+        if (a.y > b.y) { return -1; }
+        return 0;
+      })
+
+      const last = this.obstacles[this.obstacles.length - 1];
+      // if (p.frameCount % 10 === 0 && last.y > 0) {
+      if (last.y > 0 && this.obstacles.length < this.obstacleSize) {
         this.obstacles.push(new Obstacle(p));
       }
+
 
       if (pop.length > 0) {
 
         for (let i = this.obstacles.length - 1; i >= 0; i--) {
           this.obstacles[i].show();
           this.obstacles[i].update();
-
           const collisionResults = this.obstacles[i].hits(pop);
-
           for (const collisionResult of collisionResults) {
-
             if (collisionResult.collided) {
               console.log('Game Over! Collision at index:', collisionResult.index);
             }
           }
-
           if (this.obstacles[i] && this.obstacles[i].offscreen()) { // Verifique se o obstáculo ainda existe
             this.obstacles.splice(i, 1);
             score++;
@@ -154,14 +166,15 @@ export class TestModelComponent {
         const nearBy = player.sortByProximity(this.obstacles);
         if (nearBy) {
 
-          console.log(nearBy[0].x)
+
           const values = [player.x, player.y, nearBy[0].x, nearBy[0].y, nearBy[0].distance];
 
-          const actions = this.predictClass(values, ["Left", "Center", "Right"])
+          const actions =this.predictClass(values, ["Left", "Center", "Right"])
 
           switch (actions) {
             case "Left": player.moveLeft(); break;
             case "Right": player.moveRigth(); break;
+
           }
         }
 
